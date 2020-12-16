@@ -22,6 +22,28 @@ def ReadHelp():
         for line in h:
             print(line, end='')
 
+def DelTask(num):
+        num = int(num)
+        with open("todo.txt", 'r') as f:
+            lines = f.readlines()
+            print("lines before deleting ", lines)
+            Length = len(lines)
+            try:
+                TaskToDel = lines[num-1]
+                lines.remove(TaskToDel)
+                print("lines after deleting ", lines)
+
+                print('[{0}] {1} deleted'.format(num, TaskToDel))
+                with open("todo.txt", 'a+') as todoFile:
+                    todoFile.truncate(0)
+                    for task in lines:
+                        try:
+                            todoFile.write(task)
+                        except:
+                            print("An Error Occured")
+                return TaskToDel
+            except:
+                print("Task Don't exist")
 
 
 
@@ -43,6 +65,13 @@ elif (arg =="ls"):
     ReadTodo()
 elif (arg=="help" or arg is None):
     ReadHelp()
+elif (arg=="del"):
+    try:
+        taskNum = sys.argv[2]
+    except:
+        print("You didn't specified task number to delete")
+        exit()
+    DelTask(taskNum)
 # elif (arg == "report"):
 #     Report()
 # elif (arg=="done"):
