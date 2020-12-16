@@ -10,12 +10,20 @@ def TodoAdd(task):
         except:
             print("An Error Occured")
         
-def ReadFile(file):
-    with open(file, 'r') as f:
+def ReadTodo():
+    with open("todo.txt", 'r') as f:
         lines = f.readlines()
         Length = len(lines)
         for idx, line in enumerate(reversed(lines)):
             print('[{0}] : {1}'.format(Length-idx, line), end='')
+
+def ReadHelp():
+    with open("help.txt", 'r') as h:
+        for line in h:
+            print(line, end='')
+
+
+
 
 
 if len(sys.argv) > 3:
@@ -32,9 +40,9 @@ if(arg=="add"):
         exit()
     TodoAdd(task)
 elif (arg =="ls"):
-    ReadFile("todo.txt")
-# elif (arg=="help" or arg is None):
-#     ReadFile("help.txt")
+    ReadTodo()
+elif (arg=="help" or arg is None):
+    ReadHelp()
 # elif (arg == "report"):
 #     Report()
 # elif (arg=="done"):
