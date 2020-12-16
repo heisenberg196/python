@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-python3 todo.py "$@"
+python3 todo.py "$@" 
