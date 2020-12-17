@@ -1,6 +1,5 @@
-import os
 import sys
-
+from datetime import date
 
 def TodoAdd(task):
     with open("todo.txt", 'a+') as todoFile:
@@ -23,7 +22,7 @@ def ReadTodo():
     except:
         print("There are no pending todos!")
         exit()
-        
+
 def ReadHelp():
     with open("help.txt", 'r') as h:
         for line in h:
@@ -33,17 +32,16 @@ def ReadHelp():
 def DelTask(num):
     num = int(num)
     lines=[]
+
     with open("todo.txt", 'r') as f:
         lines = f.readlines()
         Length = len(lines)
-
-        try:
-            TaskToDel = lines[num-1]
-            lines.remove(TaskToDel)
-            print('Deleted todo #{0}'.format(num))
-        except:
-            print("Error: todo #0 does not exist. Nothing deleted.".format(num))
+        if Length<num or num<=0:
+            print("Error: todo #{0} does not exist. Nothing deleted.".format(num))
             exit()
+        TaskToDel = lines[num-1]
+        lines.remove(TaskToDel)
+        print('Deleted todo #{0}'.format(num))
 
     with open("todo.txt", 'a') as f:
         f.truncate(0)
@@ -61,14 +59,13 @@ def MarkTodo(num):
     with open("todo.txt", 'r') as f:
         lines = f.readlines()
         Length = len(lines)
-
-        try:
-            TaskDone = lines[num-1]
-            lines.remove(TaskDone)
-            print('Marked todo #{0} as done.'.format(num))
-        except:
+        if Length<num or num<=0:
             print("Error: todo #{0} does not exist.".format(num))
             exit()
+        TaskDone = lines[num-1]
+        lines.remove(TaskDone)
+        print('Marked todo #{0} as done.'.format(num))
+
     with open("todo.txt", 'a') as f:
         f.truncate(0)
         for task in lines:
@@ -77,12 +74,23 @@ def MarkTodo(num):
             except:
                 print("An Error Occured")       
                 exit()
+
     with open("done.txt", 'a+') as DoneFIle:
         try:
-            DoneFIle.write(TaskDone+'\r')
+            DoneFIle.write(TaskDone)
         except:
             print("An Error Occured")
 
+def Report():
+    TodoLen=0
+    DoneLen=0
+    with open("todo.txt", 'r') as f:
+        lines = f.readlines()
+        TodoLen = len(lines)
+    with open("done.txt", 'r') as f:
+        lines = f.readlines()
+        DoneLen = len(lines)
+    print("{0} Pending : {1} Completed : {2}".format(date.today().strftime("%Y-%m-%d"), TodoLen, DoneLen))
 
 
 if len(sys.argv) > 3:
@@ -103,10 +111,13 @@ if (arg=="add"):
         print("Error: Missing todo string. Nothing added!")
         exit()
     TodoAdd(task)
+
 elif (arg =="ls"):
     ReadTodo()
+
 elif (arg=="help" or arg is None):
     ReadHelp()
+
 elif (arg=="del"):
     try:
         taskNum = sys.argv[2]
@@ -114,8 +125,7 @@ elif (arg=="del"):
         print("Error: Missing NUMBER for deleting todo.")
         exit()
     DelTask(taskNum)
-# elif (arg == "report"):
-#     Report()
+
 elif (arg=="done"):
     try:
         taskNum = sys.argv[2]
@@ -123,3 +133,6 @@ elif (arg=="done"):
         print("Error: Missing NUMBER for marking todo as done.")
         exit()
     MarkTodo(taskNum)
+
+elif (arg=="report"):
+    Report()
